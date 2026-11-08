@@ -1,4 +1,3 @@
-
 // --- 1. Real-Time Clock ---
 function updateClock() {
   const now = new Date();
@@ -17,13 +16,13 @@ notchPill.addEventListener('click', () => {
   notch.classList.toggle('expanded');
 });
 
-// --- 3. Tab Switching Logic ---
+// --- 3. Segmented Tab Switcher ---
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabSections = document.querySelectorAll('.content-section');
 
 tabButtons.forEach(btn => {
   btn.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevents notch from collapsing on tab click
+    e.stopPropagation(); // Don't trigger notch collapse on tab click
     
     tabButtons.forEach(b => b.classList.remove('active'));
     tabSections.forEach(s => s.classList.remove('active'));
@@ -34,28 +33,30 @@ tabButtons.forEach(btn => {
   });
 });
 
-// --- 4. File Drag & Drop Shelf ---
+// --- 4. Interactive File Drop Shelf ---
 const dropZone = document.getElementById('dropZone');
 const fileList = document.getElementById('fileList');
 
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.style.borderColor = '#3b82f6';
+['dragenter', 'dragover'].forEach(eventName => {
+  dropZone.addEventListener(eventName, (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-active');
+  });
 });
 
-dropZone.addEventListener('dragleave', () => {
-  dropZone.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+['dragleave', 'drop'].forEach(eventName => {
+  dropZone.addEventListener(eventName, (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-active');
+  });
 });
 
 dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-  
   const files = e.dataTransfer.files;
   for (let file of files) {
     const li = document.createElement('li');
-    li.textContent = file.name;
-    fileList.appendChild(li);
+    li.innerHTML = `<span>📁 ${file.name}</span><span style="color:var(--text-secondary); font-size:0.75rem;">${(file.size / 1024).toFixed(1)} KB</span>`;
+    fileList.prepend(li);
   }
 });
 
@@ -69,10 +70,10 @@ addClipBtn.addEventListener('click', async (e) => {
     const text = await navigator.clipboard.readText();
     if (text) {
       const li = document.createElement('li');
-      li.textContent = text.length > 30 ? text.substring(0, 30) + '...' : text;
+      li.innerHTML = `<span>📋 ${text.length > 25 ? text.substring(0, 25) + '...' : text}</span>`;
       clipList.prepend(li);
     }
   } catch (err) {
-    console.log('Clipboard access error:', err);
+    console.log('Clipboard read blocked or empty:', err);
   }
 });
