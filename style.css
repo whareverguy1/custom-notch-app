@@ -1,5 +1,5 @@
 :root {
-  --bg-notch: rgba(15, 15, 20, 0.78);
+  --bg-notch: rgba(15, 15, 20, 0.85);
   --bg-card: rgba(255, 255, 255, 0.06);
   --bg-card-hover: rgba(255, 255, 255, 0.12);
   --accent-blue: #3b82f6;
@@ -19,7 +19,7 @@
 }
 
 body {
-  background: #09090b; /* Dark backdrop to make glass pop in browser testing */
+  background: #09090b;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -28,7 +28,7 @@ body {
   overflow: hidden;
 }
 
-/* Glassmorphic Main Notch Shell */
+/* Auto-Hiding Notch Container */
 .notch-container {
   background: var(--bg-notch);
   backdrop-filter: blur(24px) saturate(180%);
@@ -38,11 +38,23 @@ body {
   border-top: none;
   border-radius: 0 0 24px 24px;
   width: 320px;
+  
+  /* Auto-hide initial state (tucked up and dimmed) */
+  opacity: 0.25;
+  transform: translateY(-8px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+/* Reveal fully on hover or when expanded */
+.notch-container:hover,
+.notch-container.expanded {
+  opacity: 1;
+  transform: translateY(0);
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
 }
 
 .notch-container.expanded {
@@ -76,24 +88,26 @@ body {
   color: var(--text-primary);
 }
 
+.pill-indicator {
+  color: var(--accent-blue);
+  font-size: 0.6rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
 #pillTrack {
   color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: 500;
-  max-width: 130px;
+  max-width: 140px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* Camera Lens Cutout */
-.notch-camera {
-  width: 14px;
-  height: 14px;
-  background: #000;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
 }
 
 /* Expanded View Shell */
