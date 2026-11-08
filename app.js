@@ -1,4 +1,4 @@
-// --- 1. Real-Time Clock ---
+// --- 1. Real-Time Clock & Date ---
 function updateClock() {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, '0');
@@ -22,7 +22,7 @@ const tabSections = document.querySelectorAll('.content-section');
 
 tabButtons.forEach(btn => {
   btn.addEventListener('click', (e) => {
-    e.stopPropagation(); // Don't trigger notch collapse on tab click
+    e.stopPropagation(); // Prevent notch collapse on tab click
     
     tabButtons.forEach(b => b.classList.remove('active'));
     tabSections.forEach(s => s.classList.remove('active'));
@@ -33,7 +33,50 @@ tabButtons.forEach(btn => {
   });
 });
 
-// --- 4. Interactive File Drop Shelf ---
+// --- 4. Interactive Music Player Simulation ---
+const playlist = [
+  { title: "Blinding Lights", artist: "The Weeknd" },
+  { title: "Starboy", artist: "The Weeknd ft. Daft Punk" },
+  { title: "Do I Wanna Know?", artist: "Arctic Monkeys" }
+];
+let currentTrackIndex = 0;
+let isPlaying = false;
+
+const songTitleEl = document.getElementById('songTitle');
+const artistNameEl = document.getElementById('artistName');
+const pillTrackEl = document.getElementById('pillTrack');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function updateTrackDisplay() {
+  const track = playlist[currentTrackIndex];
+  songTitleEl.textContent = track.title;
+  artistNameEl.textContent = track.artist;
+  pillTrackEl.textContent = `${track.title} - ${track.artist}`;
+}
+
+playBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  isPlaying = !isPlaying;
+  playBtn.textContent = isPlaying ? "⏸" : "▶";
+});
+
+nextBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+  updateTrackDisplay();
+});
+
+prevBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+  updateTrackDisplay();
+});
+
+updateTrackDisplay();
+
+// --- 5. Interactive File Drop Shelf ---
 const dropZone = document.getElementById('dropZone');
 const fileList = document.getElementById('fileList');
 
@@ -60,7 +103,7 @@ dropZone.addEventListener('drop', (e) => {
   }
 });
 
-// --- 5. Clipboard Snippets ---
+// --- 6. Clipboard History Manager ---
 const addClipBtn = document.getElementById('addClipBtn');
 const clipList = document.getElementById('clipList');
 
@@ -70,10 +113,18 @@ addClipBtn.addEventListener('click', async (e) => {
     const text = await navigator.clipboard.readText();
     if (text) {
       const li = document.createElement('li');
-      li.innerHTML = `<span>📋 ${text.length > 25 ? text.substring(0, 25) + '...' : text}</span>`;
+      li.innerHTML = `<span>📋 ${text.length > 22 ? text.substring(0, 22) + '...' : text}</span>`;
       clipList.prepend(li);
+    } else {
+      alert("Clipboard is empty!");
     }
   } catch (err) {
-    console.log('Clipboard read blocked or empty:', err);
+    // Fallback if browser blocks automatic read permissions
+    const manualText = prompt("Enter snippet to add to clipboard shelf:");
+    if (manualText) {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>📋 ${manualText}</span>`;
+      clipList.prepend(li);
+    }
   }
 });
