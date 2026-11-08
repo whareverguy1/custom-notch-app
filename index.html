@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Notch</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="notch-container" id="notch">
+    
+    <!-- Collapsed Pill View -->
+    <div class="notch-pill" id="notchPill">
+      <div class="pill-left">
+        <span id="pillClock">00:00</span>
+      </div>
+      <div class="pill-center">
+        <div class="notch-camera"></div>
+      </div>
+      <div class="pill-right">
+        <span id="pillTrack">No track playing</span>
+      </div>
+    </div>
 
+    <!-- Expanded Panel View -->
+    <div class="notch-expanded" id="notchExpanded">
+      <nav class="notch-tabs">
+        <button class="tab-btn active" data-tab="music">Music</button>
+        <button class="tab-btn" data-tab="shelf">Shelf</button>
+        <button class="tab-btn" data-tab="clipboard">Clipboard</button>
+      </nav>
+
+      <div class="tab-content">
+        <!-- Music Player Section -->
+        <section id="tab-music" class="content-section active">
+          <div class="music-player">
+            <div class="track-info">
+              <h4 id="songTitle">Song Title</h4>
+              <p id="artistName">Artist Name</p>
+            </div>
+            <div class="player-controls">
+              <button id="prevBtn">⏮</button>
+              <button id="playBtn">▶</button>
+              <button id="nextBtn">⏭</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- File Shelf Section -->
+        <section id="tab-shelf" class="content-section">
+          <div class="drop-zone" id="dropZone">
+            <p>Drag & drop files here to stash</p>
+            <ul id="fileList" class="item-list"></ul>
+          </div>
+        </section>
+
+        <!-- Clipboard History Section -->
+        <section id="tab-clipboard" class="content-section">
+          <div class="clipboard-manager">
+            <button id="addClipBtn">+ Add Clipboard Text</button>
+            <ul id="clipList" class="item-list"></ul>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
